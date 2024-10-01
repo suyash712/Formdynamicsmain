@@ -1,0 +1,15 @@
+<!-- update_master_component.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Master Component</title>
+</head>
+<body>
+    <h1>Update Master Component</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

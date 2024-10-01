@@ -1,0 +1,242 @@
+{% extends 'home.html' %}
+{% block title %}FD OUTSOURSE{% endblock %}
+{% block body %}
+<main id="main" class="main">
+    <div class="col modal-header">
+        <h3><span class="badge text-bg-primary">OUTSOURCE</span></h3>
+        <input type="text" id="searchInput" onkeyup="search()" placeholder="Search here" style="margin-left: 10px;">
+        <button type="button" class="btn btn-primary" style="margin-left: 600px;" id="openModalButton">ADD</button>
+    </div>
+    <table class="table align-middle">
+        <thead>
+            <tr class="align-bottom">
+                <th scope="col">GRNNO</th>
+                <th class="align-top" scope="col">SUPPLIER NAME</th>
+                <th scope="col">PART DESC</th>
+                <th scope="col">QUANTITY</th>
+                <th scope="col">STATUS</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="employeeTable">
+            {% for material in outsourse %}
+            <tr class="align-bottom">
+                <th scope="row">{{ material.grnno }}</th>
+                <td>{{ material.supplier_name }}</td>
+                <td>{{ material.part_desc }}</td>
+                <td>{{ material.quantity }}</td>
+                <td>{{ material.status }}</td>
+                <td>
+                    {% if material.status == 'pending' %}
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#completionModal{{ material.id }}">Tick</button>
+                    {% endif %}
+                </td>
+                <td>
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#infoModal{{ material.id }}">Info</button>
+                </td>
+            </tr>
+
+            <!-- Info Modal -->
+            <div class="modal fade" id="infoModal{{ material.id }}" tabindex="-1" aria-labelledby="infoModalLabel{{ material.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content" style="height: min-content; width: 700px;">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="infoModalLabel{{ material.id }}">OUTSOURCE INFO:</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row" style="gap: 0px;">
+                                <div class="col" style="font-weight: bold;">
+                                    <ul class="list-group list-group-flush" style="padding-left: 0;">
+                                        <li class="list-group-item">GRN NO. :</li>
+                                        <li class="list-group-item">SUPPLIER NAME :</li>
+                                        <li class="list-group-item">SUPPLIER PROCESS NAME :</li>
+                                        <li class="list-group-item">OPERATION NAME :</li>
+                                        <li class="list-group-item">PART DESCRIPTION :</li>
+                                        <li class="list-group-item">QUANTITY: </li>
+                                        <li class="list-group-item">OUT DATE : </li>
+                                        <li class="list-group-item">RECEIVE DATE:</li>
+                                        <li class="list-group-item">ACCEPTED QUANTITY. :</li>
+                                        <li class="list-group-item">REJECTED QUANTITY : </li>
+                                        <li class="list-group-item">RATE : </li>
+                                        <li class="list-group-item">STATUS :</li>
+                                        <li class="list-group-item">REVISION NO : </li>
+                                    </ul>
+                                </div>
+                                <div class="col">
+                                    <ul class="list-group list-group-flush" style="padding-right: 0;">
+                                        <li class="list-group-item">{{ material.grnno }}</li>
+                                        <li class="list-group-item" style="background-color: blanchedalmond;">{{ material.supplier_name }}</li>
+                                        <li class="list-group-item">{{ material.supplier_process_name }}</li>
+                                        <li class="list-group-item">{{ material.operation_name }}</li>
+                                        <li class="list-group-item" style="background-color: blanchedalmond;">{{ material.part_desc }}</li>
+                                        <li class="list-group-item">{{ material.quantity }}</li>
+                                        <li class="list-group-item">{{ material.out_date }}</li>
+                                        <li class="list-group-item">{{ material.receive_date }}</li>
+                                        <li class="list-group-item">{{ material.accepted_qty }}</li>
+                                        <li class="list-group-item">{{ material.rejected_qty }}</li>
+                                        <li class="list-group-item">{{ material.rate }}</li>
+                                        <li class="list-group-item">{{ material.status }}</li>
+                                        <li class="list-group-item">{{ material.completed_time }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completion Modal -->
+            <div class="modal fade" id="completionModal{{ material.id }}" tabindex="-1" role="dialog" aria-labelledby="completionModalLabel{{ material.id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="completionModalLabel{{ material.id }}">Completion Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="completionForm{{ material.id }}" action="{% url 'save_completion' material.pk %}" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="accepted_quantity{{ material.id }}">Accepted Quantity:</label>
+                                    <input type="number" class="form-control" id="accepted_quantity{{ material.id }}" name="accepted_qty" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="rejected_quantity{{ material.id }}">Rejected Quantity:</label>
+                                    <input type="number" class="form-control" id="rejected_quantity{{ material.id }}" name="rejected_qty" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="completion_date{{ material.id }}">Completion Date:</label>
+                                    <input type="date" class="form-control" id="completion_date{{ material.id }}" name="completion_date" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Modal for adding new outsource -->
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="height: auto; width: 800px;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">OUTSOURCE DETAILS</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'outsourseform' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="mb-3 col">
+                                <label for="grnno" class="form-label" style="font-weight: bold;">GRNNO</label>
+                                <input type="text" name="grnno" class="form-control" id="grnno" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="form-label" style="font-weight: bold;">SUPPLIER</label>
+                                <select class="form-select" aria-label="Default select example" name="supplier_name" id="supplier_name" required>
+                                    <option selected disabled>Choose supplier</option>
+                                    {% for supplier in suppliers %}
+                                    <option value="{{ supplier.id }}">{{ supplier.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#supplierModal">Add New</button>
+                            </div>
+                            <div class="col">
+                                <label for="supplier_process_name" class="form-label" style="font-weight: bold;">SUPPLIER PROCESS NAME</label>
+                                <input type="text" name="supplier_process_name" class="form-control" id="supplier_process_name" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="operation_name" class="form-label" style="font-weight: bold;">OPERATION NAME</label>
+                                <input type="text" name="operation_name" class="form-control" id="operation_name" required>
+                            </div>
+                            <div class="col">
+                                <label for="part_desc" class="form-label" style="font-weight: bold;">PART DESC</label>
+                                <input type="text" name="part_desc" class="form-control" id="part_desc" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="quantity" class="form-label" style="font-weight: bold;">QUANTITY</label>
+                                <input type="number" name="quantity" class="form-control" id="quantity" required>
+                            </div>
+                            <div class="col">
+                                <label for="out_date" class="form-label" style="font-weight: bold;">OUT DATE</label>
+                                <input type="date" name="out_date" class="form-control" id="out_date" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="rate" class="form-label" style="font-weight: bold;">RATE</label>
+                                <input type="number" name="rate" class="form-control" id="rate" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Supplier Modal -->
+    <div class="modal fade" id="supplierModal" tabindex="-1" aria-labelledby="supplierModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="supplierModalLabel">Add Supplier</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="supplier_name" class="form-label">Supplier Name:</label>
+                            <input type="text" class="form-control" id="supplier_name" name="supplier_name" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Supplier</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('openModalButton').addEventListener('click', function () {
+            var modal = new bootstrap.Modal(document.getElementById('myModal'));
+            modal.show();
+        });
+
+        function search() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("employeeTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</main>
+{% endblock %}

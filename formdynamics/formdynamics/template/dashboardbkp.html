@@ -1,0 +1,175 @@
+{% extends 'home.html' %}
+{% block title %}FD DASHBOARD{% endblock %}
+{% block body %}
+<main id="main" class="main">
+    <h3><span class="badge text-bg-primary">DASHBOARD</span></h3>
+
+    <div class="row" style="padding: 15px; justify-content: space-evenly;">
+        <div  class="sp" style="height: 100px; width: 250px; background-color: yellow; border-radius: 10px; border: solid 1px black; justify-content: space-evenly; display: flex; align-items: center; text-decoration: none;">
+              <a href="http://127.0.0.1:8000/employees"><SPAN style="font-weight: bold;" >TOTAL MEMBERS </SPAN></a>
+              <span>-</span>
+              <span style="font-weight: bolder;">   5</span>
+        </div>
+        <div class="sp" style="height: 100px; width: 250px; background-color: orange; border-radius: 10px; border: solid 1px black; justify-content: space-evenly; display: flex; align-items: center;">
+          <SPAN style="font-weight: bold;">TOTAL MACHINES </SPAN>
+          <span>-</span>
+          <span style="font-weight: bolder;">   4</span>
+    </div>
+    <div class="sp" style="height: 100px; width: 250px; background-color: rgb(99, 201, 99); border-radius: 10px; border: solid 1px black; justify-content: space-evenly; display: flex; align-items: center;">
+      <SPAN style="font-weight: bold;">TOTAL MEMBERS </SPAN>
+      <span>-</span>
+      <span style="font-weight: bolder;">   5</span>
+  </div>
+  <div class="sp" style="height: 100px; width: 250px; background-color: aqua; border-radius: 10px; border: solid 1px black; justify-content: space-evenly; display: flex; align-items: center;">
+    <SPAN style="font-weight: bold;">TOTAL ORDERS </SPAN>
+    <span>-</span>
+    <span style="font-weight: bolder;">   10</span>
+  </div>
+    
+    <div class="row" style="padding: 5px; gap: 10px;">
+        <div class="col" style="height: min-content; width: auto; background-color: white; border-radius: 10px; padding: 5px; border: solid black 1px">
+            <div class="s">
+                <div class="row" style="height: 36px; width: auto; border-radius: 5px;">
+                    <a href="http://127.0.0.1:8000/display_form_data"><h3><span class="badge text-bg-primary">WORKING ORDERS</span></h3></a>
+                </div>
+                
+                
+
+                <div class="row" style="padding: 10px;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">GRNNO</th>
+                                <th scope="col">NO OF QUANTITY</th>
+                                <th scope="col">EXP TIME</th>
+                                <th scope="col">WORK DONE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in PENDING_orders %}
+                            <tr>
+                                <td>{{ order.grn_entry.grnentry_GRNNO }}</td>
+                                <td>{{ order.grn_entry.grnentry_NOQUANTITY }}</td>
+                                <td>{{ order.grn_entry.grnentry_EXPTIME|date:"d/m/Y" }}</td>
+                                <td>{{ order.order_status }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="s">
+                <div class="row" style="height: 36px; width: auto; border-radius: 5px;">
+                    <a href="http://127.0.0.1:8000/grnmainpage"><h3><span class="badge text-bg-primary">UPCOMING ORDERS</span></h3></a>
+                </div>
+                <div class="row" style="padding: 10px;">
+                    {% if UPCOMING_orders %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">GRNNO</th>
+                                <th scope="col">NO OF QUANTITY</th>
+                                <th scope="col">EXP TIME</th>
+                                <th scope="col">ORDER STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in UPCOMING_orders %}
+                            <tr>
+                                <td>{{ order.grnentry_GRNNO }}</td>
+                                <td>{{ order.grnentry_NOQUANTITY }}</td>
+                                <td>{{ order.grnentry_EXPTIME|date:"d/m/Y" }}</td>
+                                <td>{{ order.status }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p>No upcoming orders.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col" style="height: min-content width:auto; background-color: white; border-radius: 10px; padding: 5px; border: solid black 1px;">
+            <div class="row" style="height: 36px; width: auto; border-radius: 5px;">
+                <h3><span class="badge text-bg-primary">INVENTORY</span></h3>
+            </div>
+            <div class="row" style="padding: 10px;">
+                <canvas id="myPieChart" width="250" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var ctx = document.getElementById('myPieChart');
+        if (ctx) {
+            ctx = ctx.getContext('2d');
+            
+            var labels = [];
+            var data = [];
+            var backgroundColor = [];
+            
+            {% for item in pending_by_drawing %}
+                labels.push('Pending - {{ item.grn_entry__grnentry_DRAWINGNO }}');
+                data.push({{ item.pending_quantity }});
+                backgroundColor.push(getRandomColor());
+            {% endfor %}
+
+            {% for item in completed_by_drawing %}
+                labels.push('Completed - {{ item.grn_entry__grnentry_DRAWINGNO }}');
+                data.push({{ item.completed_quantity }});
+                backgroundColor.push(getRandomColor());
+            {% endfor %}
+
+            var myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColor,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    var label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            console.error('Canvas element with id "myPieChart" not found.');
+        }
+    });
+
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+</script>
+
+{% endblock %}

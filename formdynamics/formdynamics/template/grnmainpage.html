@@ -1,0 +1,635 @@
+    {% extends 'home.html' %}
+    {% block title %}FD GRN ENTRY DETAILS{% endblock %}
+    {% block head %}
+    <!-- Add any necessary CSS or JavaScript imports here -->
+    <style>
+        /* CSS for hover effect */
+        .row1:hover {
+            background-color: blue !important; /* Change background color to blue on hover */
+            color: white !important; /* Change font color to white on hover */
+        }
+    </style>
+    {% endblock %}
+    {% block body %}
+    <main id="main" class="main">
+        <div class="row">
+            <div class="col">
+                <h3> <span class="badge text-bg-warning">GRN ENTRY</span></h3>
+            </div>
+            <div class="col">
+                <input type="text" id="searchInput" onkeyup="search()" placeholder="Search for grn" style="margin-left: 400px;">
+            </div>
+            <div class="col" style="display: flex; justify-content: end ;">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    ADD
+                  </button> 
+            </div>
+    
+
+        </div>
+        <table class="table" id="entryTable">
+            <thead>
+                <tr>
+                    <th>GRN NO.</th>
+                    <th>DRAWING NO</th>
+                    <th>CUSTOMER NAME</th>
+                    <th>EXP DATETIME</th>
+                    <th>NO OF QUANTITY</th>
+                    
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="employeeTable">
+                {% for entry in grn %}
+                <tr class="clickable-row row1">
+                    <td>{{ entry.grnentry_GRNNO }}</td>
+                    <td>{{ entry.grnentry_DRAWINGNO }}</td>
+                    <td>{{ entry.customername }}</td>
+                    <td>{{ entry.grnentry_DATETIME }}</td>
+                    <td>{{ entry.grnentry_NOQUANTITY }}</td>
+                    
+                    <td>
+                        {% if entry.status == 'Pending' %}
+                        <a class="btn btn-primary tracking-entry-btn" href="{% url 'tracking_entry_view' entry.id %}">PRODUCTION</a></td>
+                        {% elif entry.status == 'sa' %}
+                        <td></td>
+                        {% endif %}
+                        <td>
+                        
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#infoModal{{ entry.id }}">Info</button>
+                        </td><td>
+                        <button class="editButton btn  btn-outline-info"
+                        data-id="{{ entry.pk }}"
+                        data-grn_no="{{ entry.grnentry_GRNNO }}"
+                        data-description="{{ entry.grnentry_MATERIALDESCRIPTION }}"
+                        data-material_grade="{{ entry.grnentry_MATERIALGRADE }}"
+                        data-quantity_type="{{ entry.grnentry_QUANTITYTYPE }}"
+                        data-no_quantity="{{ entry.grnentry_NOQUANTITY }}"
+                        data-store_owner="{{ entry.grnentry_STOREOWNER }}"
+                        data-order_type="{{ entry.grnentry_ORDERTYPE }}"
+                        data-pono="{{ entry.grnentry_PONO }}"
+                        data-challanno="{{ entry.grnentry_CHALLANNO }}"
+                        data-comments="{{ entry.grnentry_COMMENTS }}"
+                        data-sono="{{ entry.grnentry_SONO }}"
+                        data-partname="{{ entry.grnentry_PARTNAME }}"
+                        data-drawing_no="{{ entry.grnentry_DRAWINGNO }}"
+                        data-revision_no="{{ entry.REVISIONNO }}"
+                        data-customername="{{ entry.customername }}">
+                        Edit
+                    </button>
+                    </td>
+                </tr>
+                <script>
+                    function redirectToForm(entryId) {
+                        window.location.href = `/form/${entryId}/`;
+                    }
+                </script>
+
+                <!-- Info Modal -->
+                <div class="modal fade" id="infoModal{{ entry.id }}" tabindex="-1" aria-labelledby="infoModalLabel{{ entry.id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content"  style="height: auto; width: 800px;">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="infoModalLabel{{ entry.id }}">GRN ENTRY INFO:</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                            </div>
+                            <div class="modal-body" >
+                              <div class="row" style="gap: 0px;">
+                                  <div class="col" style="font-weight: bold;">
+                                    <ul class="list-group list-group-flush" style="padding-left: 0cap;">
+                                      <li class="list-group-item">GRN NO. :</li>
+                                      <li class="list-group-item">MATERIAL DESCRIPTION :</li>
+                                      <li class="list-group-item">MATERIAL GRADE:</li>
+                                      <li class="list-group-item">QUANTITY :</li>
+                                      <li class="list-group-item">DATE OF GRNENTRY :</li>
+                                      <li class="list-group-item">STORE OWNER :</li>
+                                      <li class="list-group-item">ORDER TYPE : </li>
+                                      <li class="list-group-item">CUSTOMER CODE:</li>
+                                      <li class="list-group-item">PO NO. : </li>
+                                      <li class="list-group-item">CHALLAN NO : </li>
+                                      <li class="list-group-item">COMMENTS :</li>
+                                      <li class="list-group-item">SALESORDER NO :</li>
+                                      <li class="list-group-item">PART NAME : </li>
+                                      <li class="list-group-item">DRAWING NO :</li>
+                                      <li class="list-group-item">REVISION NO : </li>
+                                      <li class="list-group-item">EXPECTED TIME : </li>
+                                      <li class="list-group-item">FILE : </li>
+                                  
+                                    </ul>
+                                  </div>
+                                  <div class="col">
+                                    <ul class="list-group list-group-flush " style="padding-right : 0cap;">
+                                      <li class="list-group-item" style="background-color: blanchedalmond;">{% if entry.grnentry_GRNNO %}{{ entry.grnentry_GRNNO }}{% else %}<span style="color: red;">No CHALLAN NO.</span>{% endif %}</li>
+                                      <li class="list-group-item">{% if entry.grnentry_MATERIALDESCRIPTION %}{{ entry.grnentry_MATERIALDESCRIPTION }}{% else %}<span style="color: red;">No CHALLAN NO.</span>{% endif %}</li>
+                                      <li class="list-group-item">{{ entry.grnentry_MATERIALGRADE }}</li>
+                                      <li class="list-group-item" style="background-color: blanchedalmond;">{{ entry.grnentry_NOQUANTITY}} {{ entry.grnentry_QUANTITYTYPE }}</li>
+                                    
+                                      <li class="list-group-item">{{ entry.grnentry_DATETIME }}</li>
+                                      <li class="list-group-item"> {{ entry.grnentry_STOREOWNER }}</li>
+                                      <li class="list-group-item"> {{ entry.grnentry_ORDERTYPE }} </li>
+                                      <li class="list-group-item">{% if entry.grnentry_CUSTOMERCODE %}{{ entry.grnentry_CUSTOMERCODE }}{% else %}<span style="color: red;">No customer code</span>{% endif %}</li>
+                                      <li class="list-group-item">{% if entry.grnentry_PONO %}{{ entry.grnentry_PONO }}{% else %}<span style="color: red;">No PO.</span>{% endif %}</li>
+                                      <li class="list-group-item">{% if entry.grnentry_CHALLANNO %}{{ entry.grnentry_CHALLANNO }}{% else %}<span style="color: red;">No CHALLAN NO.</span>{% endif %}</li>
+                                      <li class="list-group-item">{% if entry.grnentry_COMMENTS %}{{ entry.grnentry_COMMENTS }}{% else %}<span style="color: red;">No COMMENTS.</span>{% endif %}</li>
+                                     
+                                      <li class="list-group-item">{% if entry.grnentry_SONO %}{{ entry.grnentry_SONO }}{% else %}<span style="color: red;">No SO NO.</span>{% endif %}</li></li>
+                                      <li class="list-group-item">{% if entry.grnentry_PARTNAME %}{{ entry.grnentry_PARTNAME }}{% else %}<span style="color: red;">No PART NO</span>{% endif %}</li> </li>
+                                      <li class="list-group-item">{% if entry.grnentry_DRAWINGNO %}{{ entry.grnentry_DRAWINGNO }}{% else %}<span style="color: red;">No DRAWING NO.</span>{% endif %}</li></li>
+                                      <li class="list-group-item"> {% if entry.REVISIONNO %}{{ entry.REVISIONNO }}{% else %}<span style="color: red;">No REVISION NO.</span>{% endif %}</li> </li>
+                                      <li class="list-group-item">{{ entry.grnentry_EXPTIME }} </li>
+                                      <li class="list-group-item">{% if entry.FILE %}<a href="{{ entry.FILE.url }}" target="_blank">Download</a>{% else %}No file available{% endif %}</li>
+                                    </ul>
+                                  </div></div>
+                                
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tracking Modal -->
+
+                <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="myModalLabel">Edit GRN Entry</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Your form for editing a GRN entry -->
+                                <form method="post" action="{% url 'edit_grnentry' pk=entry.pk %}" id="editForm">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="entry_id" id="entryId">
+            
+                                    <!-- Add all your form fields similar to the add modal -->
+                                    <div class="row mb-3">
+                                        <label for="editGRNNO" class="col-sm-4 col-form-label" style="font-weight: bold;">GRN NUMBER<span class="text-danger">*</span></label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="GRNNO" name="edit_grnentry_GRNNO" class="form-control" id="editGRNNO" value="{{ entry.grnentry_GRNNO }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputCustomerName" class="col-sm-4 col-form-label" style="font-weight: bold;">CUSTOMER NAME<span class="text-danger">*</span></label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="CUSTOMER NAME" name="customername" class="form-control" id="inputCustomerName" value="{{ cal.customername }}">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputMaterialDescription" class="col-sm-4 col-form-label" style="font-weight: bold;">MATERIAL DESCRIPTION<span class="text-danger">*</span></label>
+                                        <div class="col-sm-8">
+                                            <textarea type="text" name="grnentry_MATERIALDESCRIPTION" class="form-control" id="inputMaterialDescription" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputMaterialGrade" class="col-sm-4 col-form-label" style="font-weight: bold;">MATERIAL GRADE<span class="text-danger">*</span></label>
+                                        <div class="col-sm-8">
+                                            <select class="form-select" aria-label="Default select example" name="grnentry_MATERIALGRADE" id="inputMaterialGrade">
+                                                <option selected>select materialgrade</option>
+                                                <option value="EN8" {% if entry.grnentry_MATERIALGRADE == 'EN8' %} selected {% endif %}>EN8</option>
+                                                <option value="EN8" {% if entry.grnentry_MATERIALGRADE == 'EN8' %} selected {% endif %}>EN8</option>
+                                                <option value="EN19" {% if entry.grnentry_MATERIALGRADE == 'EN19' %} selected {% endif %}>EN19</option>
+                                                <option value="SS316" {% if entry.grnentry_MATERIALGRADE == 'SS316' %} selected {% endif %}>SS316</option>
+                                                {% for field in fields %}
+                                              
+                                               
+                                          
+                                                {% endfor %}
+                                              </select>
+                                        </div>
+                                    </div>
+                                    <!-- Add other fields similarly -->
+                                    <div class="row mb-3">
+                                        <label for="inputQuantityType" class="col-sm-4 col-form-label" style="font-weight: bold;">QUANTITY TYPE<span class="text-danger">*</span></label>
+                                        <div class="col-sm-8">
+                                          
+                                                <select class="form-select" aria-label="Default select example" name="grnentry_QUANTITYTYPE"  id="inputQuantityType" >
+                                             <option selected>select quantity type</option>
+                                             <option value="KG">KG</option>
+                                             <option value="NO_S">NO'S</option>
+                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputNoQuantity" class="col-sm-4 col-form-label" style="font-weight: bold;">NO OF QUANTITY<span class="text-danger">*</span></label>
+                                        <div class="col-sm-8">
+                                            <input type="number" placeholder="NO OF QUANTITY" name="grnentry_NOQUANTITY" class="form-control" id="inputNoQuantity" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputStoreOwner" class="col-sm-4 col-form-label" style="font-weight: bold;">STORE OWNER<span class="text-danger">*</span></label>
+                                        <div class="col-sm-8">
+                                            <select class="form-select" aria-label="Default select example" name="grnentry_STOREOWNER" id="inputStoreOwner">
+                                                <option selected>select store owner</option>
+                                                <option value="YOGESH PALKAR">YOGESH PALKAR</option>
+                                                <option value="PRANAV PATIL">PRANAV PATIL</option>
+                                                <option value="SHUBHAM BHALERAO">SHUBHAM BHALERAO</option>
+                                              </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputOrderType" class="col-sm-4 col-form-label" style="font-weight: bold;">ORDER TYPE<span class="text-danger">*</span></label>
+                                        <div class="col-sm-8">
+                                            <select class="form-select" aria-label="Default select example" name="grnentry_ORDERTYPE" id="inputOrderType">
+                                                <option selected>select order type</option>
+                                                <option value="WITH MATERIAL">WITH MATERIAL</option>
+                                                <option value="JOB WORK">JOB WORK</option>
+                                              </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputPONo" class="col-sm-4 col-form-label" style="font-weight: bold;">PO NO.<span class="text-danger">*</span></label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="PO NO." name="grnentry_PONO" class="form-control" id="inputPONo" >
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputChallanNo" class="col-sm-4 col-form-label" style="font-weight: bold;">CHALLAN NO.<span class="text-danger">*</span></label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="CHALLAN NO." name="grnentry_CHALLANNO" class="form-control" id="inputChallanNo" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputComments" class="col-sm-4 col-form-label" style="font-weight: bold;">COMMENTS</label>
+                                        <div class="col-sm-8">
+                                            <textarea type="text" name="grnentry_COMMENTS" class="form-control" id="inputComments"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputSONo" class="col-sm-4 col-form-label" style="font-weight: bold;">SO NO.<span class="text-danger">*</span></label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="SO NO." name="grnentry_SONO" class="form-control" id="inputSONo" >
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputPartName" class="col-sm-4 col-form-label" style="font-weight: bold;">PART NAME<span class="text-danger">*</span></label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="PART NAME" name="grnentry_PARTNAME" class="form-control" id="inputPartName" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputDrawingNo" class="col-sm-4 col-form-label" style="font-weight: bold;">DRAWING NO.<span class="text-danger">*</span></label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="DRAWING NO." name="grnentry_DRAWINGNO" class="form-control" id="inputDrawingNo" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputRevisionNo" class="col-sm-4 col-form-label" style="font-weight: bold;">REVISION NO.</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" placeholder="REVISION NO." name="REVISIONNO" class="form-control" id="inputRevisionNo">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mb-3">
+                                        <label for="inputFile" class="col-sm-4 col-form-label" style="font-weight: bold;">FILE</label>
+                                        <div class="col-sm-8">
+                                            <input type="file" name="FILE" class="form-control" id="inputFile">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </div>
+                                        <div class="col">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tracking Modal -->
+            
+                <div class="modal" id="editModal">
+                    <form id="calibrationForm" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- Form fields for editing existing entry -->
+                        <!-- Replace with your actual form fields -->
+                        <input type="hidden" name="pk" value="">
+                        <input type="text" name="grnentry_GRNNO" placeholder="GRN Number">
+                        <input type="text" name="grnentry_MATERIALDESCRIPTION" placeholder="Material Description">
+                        <!-- Other fields -->
+                        <button type="submit">Update</button>
+                    </form>
+                </div>
+
+                <!-- Delivery Modal -->
+                
+
+                {% endfor %}
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content"style="height: min-content; width: 900px;">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">GRN ENTRY</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <form id="grnForm" method="POST" action="{% url 'savegrndata' %}"  enctype="multipart/form-data"  style="height: min-content; width: 600px;">
+                              {% csrf_token %}
+                              <div class="row">
+                                <div class="col">
+                                   <div class="row mb-3">
+                                     <label for="inputGRNNO" class="col-sm-2 col-form-label" style="font-weight: bold;">GRN NUMBER<span class="text-danger">*</span></label>
+                                     <div class="col-sm-10">
+                                       <input type="text" placeholder="GRNNO" name="GRNNO" class="form-control" id="inputGRNNO" required>
+                                     </div>
+                                   </div>
+                                </div>
+                                <div class="col">
+                                  <div class="row mb-3">
+                                    <label for="inputGRNNO" class="col-sm-2 col-form-label" style="font-weight: bold;">CUSTOMER NAME<span class="text-danger">*</span></label>
+                                    <div class="col-sm-10">
+                                      <input type="text" placeholder="CUSTOMER NAME" name="customername" class="form-control" id="inputGRNNO" required>
+                                    </div>
+                                  </div>
+                               </div>
+                                <div class="col">
+                                  <div class="row mb-3">
+                                    <label for="inputMaterialDescription" class="col-sm-2 col-form-label" style="font-weight: bold;">MATERIAL DESCRIPTION<span class="text-danger">*</span></label>
+                                    <div class="col-sm-10">
+                                      <textarea type="text" name="MATERIALDESCRIPTION" class="form-control" id="inputMaterialDescription" required></textarea>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                             
+                              <div class="row mb-3">
+                                <label for="inputMaterialGrade" class="col-sm-2 col-form-label" style="font-weight: bold;">MATERIAL GRADE<span class="text-danger">*</span></label>
+                                <div class="col-sm-10">
+                                  <div class="row">
+                                  <div class="col">
+                                  <select class="form-select" aria-label="Default select example" name="MATERIALGRADE" id="inputMaterialGrade">
+                                    <option selected>select materialgrade</option>
+                                    <option value="EN8">EN8</option>
+                                    <option value="EN9">EN9</option>
+                                    <option value="EN24">EN24</option>
+                                    <option value="EN1A">EN1A</option>
+                                    <option value="ALU T6 6082">ALU T6 6082</option>
+                                    <option value="ALU T6 5082">ALU T6 5082</option>
+                                    <option value="SS 316">SS 316</option>
+                                    <option value="SS 304">SS 304</option>
+                                    <option value="MS">MS</option>
+                                    {% for field in col %}
+                                      <option value="{{ field.field }}">{{ field.field }}</option>
+                                    {% endfor %}
+                                  </select>
+                                </div>
+                                <div class="col">
+                                  <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                    ADD FIELD
+                                  </button>
+                                </div>
+                              </div>
+                                  
+                                </div>
+                                
+                              </div>
+                      
+                              
+                      
+                              <!-- Modal -->
+                              
+                            <div class="row">
+                                <div class="col">
+                                  <div class="row mb-3">
+                                     <label class="col-sm-2 col-form-label" style="font-weight: bold;">QUANTITY<span class="text-danger">*</span></label>
+                                     <div class="col-sm-10">
+                                       <input type="number" name="NOQUANTITY" min="1" class="form-control" required>
+                                     </div>
+                                  </div>
+                                </div> 
+                              <div class="col">
+                                <div class="row mb-3">
+                                 <label class="col-sm-2 col-form-label" style="font-weight: bold;">QUANTITY TYPE<span class="text-danger">*</span></label>
+                                   <div class="col-sm-10">
+                                  <select class="form-select" aria-label="Default select example" name="grnentry_QUANTITYTYPE">
+                                    <option selected>select quantity type</option>
+                                    <option value="KG">KG</option>
+                                    <option value="NO_S">NO'S</option>
+                                  </select>
+                                   </div>
+                                </div>
+                              </div>
+                            </div>
+                      
+                      
+                             <div class="row">
+                              <div class="col">
+                              <div class="row mb-3">
+                                <label for="inputStoreOwner" class="col-sm-2 col-form-label"style="font-weight: bold;">STORE OWNER<span class="text-danger">*</span></label>
+                                <div class="col-sm-10">
+                                  <select class="form-select" aria-label="Default select example" name="grnentry_STOREOWNER">
+                                    <option selected>select store owner</option>
+                                    <option value="YOGESH PALKAR">YOGESH PALKAR</option>
+                                    <option value="PRANAV PATIL">PRANAV PATIL</option>
+                                    <option value="SHUBHAM BHALERAO">SHUBHAM BHALERAO</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col">
+                              <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" style="font-weight: bold;">ORDER TYPE<span class="text-danger">*</span></label>
+                                <div class="col-sm-10">
+                                  <select class="form-select" aria-label="Default select example" name="grnentry_ORDERTYPE">
+                                    <option selected>select order type</option>
+                                    <option value="WITH MATERIAL">WITH MATERIAL</option>
+                                    <option value="JOB WORK">JOB WORK</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            </div>
+                      
+                            <div class="row">
+                              <div class="col">
+                              <div class="row mb-3">
+                                <label for="inputSONO" class="col-sm-2 col-form-label" style="font-weight: bold;">SO NO.</label>
+                                <div class="col-sm-10">
+                                  <input type="text" name="SONO" class="form-control" id="inputSONO" >
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col">
+                              <div class="row mb-3">
+                                <label for="inputChallanNo" class="col-sm-2 col-form-label" style="font-weight: bold;">CHALLAN NO.</label>
+                                <div class="col-sm-10">
+                                  <input type="text" name="CHALLANNO" class="form-control" id="inputChallanNo">
+                                </div>
+                              </div>
+                            </div>
+                            </div>
+                              <div class="row">
+                                <div class="col">
+                              <div class="row mb-3">
+                                <label for="inputComments" class="col-sm-2 col-form-label" style="font-weight: bold;">COMMENTS</label>
+                                <div class="col-sm-10">
+                                  <input type="text" name="COMMENTS" class="form-control" id="inputComments">
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col">
+                              <div class="row mb-3">
+                                <label for="inputPartName" class="col-sm-2 col-form-label" style="font-weight: bold;">PART NAME<span class="text-danger">*</span></label>
+                                <div class="col-sm-10">
+                                  <input type="text" name="PARTNAME" class="form-control" id="inputPartName" required>
+                                </div>
+                              </div>
+                            </div>
+                            </div>
+                            <div class="row">
+                              <div class="col">
+                              <div class="row mb-3">
+                                <label for="inputDrawingNo" class="col-sm-2 col-form-label" style="font-weight: bold;">DRAWING NO<span class="text-danger">*</span></label>
+                                <div class="col-sm-10">
+                                  <input type="text" name="DRAWINGNO" class="form-control" id="inputDrawingNo" required>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col">
+                              <div class="row mb-3">
+                                <label for="inputDrawingNo" class="col-sm-2 col-form-label" style="font-weight: bold;">REVISION NO<span class="text-danger">*</span></label>
+                                <div class="col-sm-10">
+                                  <input type="text" name="REVISIONNO" class="form-control" id="inputDrawingNo" required>
+                                </div>
+                              </div>
+                            </div>
+                            </div>
+                            <div class="row">
+                              <div class="col">
+                              <div class="row mb-3">
+                                <label for="inputPoNo" class="col-sm-2 col-form-label" style="font-weight: bold; font-size:   ">PO NO</label>
+                                <div class="col-sm-10">
+                                  <input type="text" name="PONO" class="form-control" id="inputPoNo">
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col">
+                              <div class="row mb-3">
+                                <label for="inputExpTime" class="col-sm-2 col-form-label" style="font-weight: bold;">EXPDATE<span class="text-danger">*</span></label>
+                                <div class="col-sm-10">
+                                  <input type="date" name="EXPTIME" class="form-control" id="inputExpTime" required>
+                                </div>
+                              </div>
+                            </div>
+                            </div>
+                              <div class="row mb-3">
+                                <label for="inputExpTime" class="col-sm-2 col-form-label" style="font-weight: bold;">DRAWING FILE<span class="text-danger">*</span></label>
+                                <div class="col-sm-10">
+                                  <input type="file" name="FILE" class="form-control" id="inputExpTime">
+                                </div>
+                              </div>
+                              <div class="text-left">
+                                <button id="submitBtn" type="submit" class="btn btn-primary">Submit</button>
+                                <button type="reset" class="btn btn-secondary">Reset</button>
+                              </div>
+                            </form></div></div></div></div>
+
+                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Material Grade</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <form id="newFieldForm" method="post" action="{% url 'savefield' %}">
+                                      {% csrf_token %}
+                                      <div class="mb-3">
+                                        <label for="newField" class="form-label">Enter new field:</label>
+                                        <input name="field" type="text" class="form-control" id="newField" required>
+                                      </div>
+                                      <button type="submit" class="btn btn-primary">Submit</button>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+            </tbody>
+        </table>
+    </main>
+    
+    <script>
+       document.addEventListener('DOMContentLoaded', function () {
+    const editForm = document.getElementById('editForm');
+    const editModal = new bootstrap.Modal(document.getElementById('myModal'));
+
+    // Event listener for edit buttons
+    document.querySelectorAll('.editButton').forEach(button => {
+        button.addEventListener('click', function () {
+            const entryId = this.getAttribute('data-id');
+            editForm.action = `/edit_grnentry/${entryId}/`;
+
+            // Prefill form fields
+            document.getElementById('entryId').value = entryId;
+            document.getElementById('editGRNNO').value = this.getAttribute('data-grn_no');
+            document.getElementById('inputCustomerName').value = this.getAttribute('data-customername');
+            document.getElementById('inputMaterialDescription').value = this.getAttribute('data-description');
+            document.getElementById('inputMaterialGrade').value = this.getAttribute('data-material_grade');
+            document.getElementById('inputQuantityType').value = this.getAttribute('data-quantity_type');
+            document.getElementById('inputNoQuantity').value = this.getAttribute('data-no_quantity');
+            document.getElementById('inputStoreOwner').value = this.getAttribute('data-store_owner');
+            document.getElementById('inputOrderType').value = this.getAttribute('data-order_type');
+            document.getElementById('inputPONo').value = this.getAttribute('data-pono');
+            document.getElementById('inputChallanNo').value = this.getAttribute('data-challanno');
+            document.getElementById('inputComments').value = this.getAttribute('data-comments');
+            document.getElementById('inputSONo').value = this.getAttribute('data-sono');
+            document.getElementById('inputPartName').value = this.getAttribute('data-partname');
+            document.getElementById('inputDrawingNo').value = this.getAttribute('data-drawing_no');
+            document.getElementById('inputRevisionNo').value = this.getAttribute('data-revision_no');
+
+            // Show the modal
+            editModal.show();
+        });
+    });
+
+    // Handle form submission
+    editForm.addEventListener('submit', function (event) {
+    event.preventDefault();  // Prevent the default form submission
+    if (confirm('Are you sure you want to update this entry?')) {
+        // If confirmed, submit the form
+        this.submit();
+    }
+});
+});
+    </script>
+    
+   
+        <script>
+
+
+    function removeField(button) {
+        button.parentElement.remove();
+    }
+
+    function search() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById('searchInput');
+        filter = input.value.toUpperCase();
+        table = document.getElementById('entryTable');
+        tr = table.getElementsByTagName('tr');
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[0]; // Adjust index to the column you want to search
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+    }
+
+    function confirmSubmit() {
+        return confirm('Are you sure you want to submit the form?');
+    }
+    </script>
+
+    {% endblock %}

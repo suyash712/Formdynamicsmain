@@ -1,0 +1,104 @@
+{% extends 'home.html' %}
+{% block title %}FD DASHBOARD{% endblock %}
+{% block head %}
+    <!-- Include FullCalendar CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.1/main.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS for modal -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles to adjust calendar size, add colorful backgrounds, and change calendar background color */
+        #calendar {
+            width: 80%; /* Adjust the width as per your layout */
+            margin: 0 auto; /* Center the calendar horizontally */
+            background-color: #e0f2f1; /* Ice-like background color */
+            border-radius: 8px; /* Rounded corners */
+            padding: 20px; /* Add padding for better visual separation */
+        }
+        .fc-event {
+            color: #fff; /* Text color */
+            border-color: transparent; /* Transparent border */
+            cursor: pointer; /* Change cursor to pointer on hover */
+            padding: 5px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .fc-event-important {
+            background-color: #f44336; /* Red */
+        }
+        .fc-event-info {
+            background-color: #2196F3; /* Blue */
+        }
+        .fc-event-success {
+            background-color: #4CAF50; /* Green */
+        }
+        .fc-event-warning {
+            background-color: #FFC107; /* Yellow */
+        }
+        .fc-event-primary {
+            background-color: #673AB7; /* Purple */
+        }
+    </style>
+{% endblock %}
+{% block body %}
+<main id="main" class="main">
+   
+    <div id="calendar"></div>
+    <!-- Bootstrap Modal for displaying event details -->
+    <div class="modal fade" id="calendarModal" tabindex="-1" role="dialog" aria-labelledby="calendarModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="calendarModalLabel">Order Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="orderDetails">
+                   HII
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- Include moment.js for date handling -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+<!-- Include FullCalendar -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
+<!-- Include Bootstrap JS for modal functionality -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#calendar').fullCalendar({
+            defaultView: 'month',
+            events: [
+                {% for task in tasks %}
+                {
+                    title: '{{ task.process }}',  // Task title
+                    start: '{{ task.start_date|date:"Y-m-d" }}', // Start date
+                    end: '{{ task.end_date|date:"Y-m-d" }}', // End date
+                    description: '{{ task.description|default:"" }}', // Description (optional)
+                    acc_qty: '{{ task.acc_qty|default:"0" }}', // Accepted quantity
+                    rej_qty: '{{ task.rej_qty|default:"0" }}', // Rejected quantity
+                    completed: '{{ task.completed|yesno:"true,false" }}', // Completed status
+                    className: 'fc-event-' + '{{ task.id }}' // Assign a unique class based on task ID
+                },
+                {% endfor %}
+            ],
+            eventClick: function(calEvent, jsEvent, view) {
+                var content = '<h3>' + calEvent.title + '</h3>';
+                content += '<p><strong>Start:</strong> ' + moment(calEvent.start).format('YYYY-MM-DD') + '</p>';
+                content += '<p><strong>End:</strong> ' + moment(calEvent.end).format('YYYY-MM-DD') + '</p>';
+                content += '<p><strong>Description:</strong> ' + calEvent.description + '</p>';
+                content += '<p><strong>Accepted Quantity:</strong> ' + calEvent.acc_qty + '</p>';
+                content += '<p><strong>Rejected Quantity:</strong> ' + calEvent.rej_qty + '</p>';
+                content += '<p><strong>Completed:</strong> ' + (calEvent.completed ? 'Yes' : 'No') + '</p>';
+                
+                $('#orderDetails').html(content); // Update modal body with order details
+                $('#calendarModal').modal();
+            }
+        });
+    });
+</script>
+{% endblock %}

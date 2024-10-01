@@ -1,0 +1,236 @@
+{% extends 'home.html'%}
+{% block title %}FD PRODUCTION DETAILS{% endblock %}
+{% block body %}
+<main id="main" class="main">
+    <div class="row" style="display: flex;">
+        <div class="col">
+    <span class="badge text-bg-success">GRNNO: {{ entry.grn_entry.grnentry_GRNNO }}</span>
+    <span class="badge text-bg-success" >STATUS: {{ entry.order_status }}  </span>
+</div><div class="col" style="display: flex; justify-content: end  ;">
+<button type="button" class="btn btn-warning btn-sm"  data-bs-toggle="modal" data-bs-target="#deliveryModal">
+    ABOUT ORDER
+</button>
+</div></div>
+
+<div class="modal fade" id="deliveryModal" tabindex="-1" aria-labelledby="deliveryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="height: min-content; width: 700px">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deliveryModalLabel">PRODUCT DETAILS</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              
+
+               <div class="row" style="gap: 0px;">
+                <div class="col" style="font-weight: bold;">
+                  <ul class="list-group list-group-flush" style="padding-left: 0cap;">
+                    <li class="list-group-item">GRN NO. :</li>
+                    <li class="list-group-item">MATERIAL DESCRIPTION :</li>
+                    <li class="list-group-item">MATERIAL GRADE:</li>
+                    <li class="list-group-item">QUANTITY :</li>
+                    <li class="list-group-item">DATE OF GRNENTRY :</li>
+                    <li class="list-group-item">STORE OWNER :</li>
+                    <li class="list-group-item">ORDER TYPE : </li>
+                    <li class="list-group-item">CUSTOMER CODE:</li>
+                    <li class="list-group-item">PO NO. : </li>
+                    <li class="list-group-item">CHALLAN NO : </li>
+                    <li class="list-group-item">COMMENTS :</li>
+                    <li class="list-group-item">SALESORDER NO :</li>
+                    <li class="list-group-item">PART NAME : </li>
+                    <li class="list-group-item">DRAWING NO :</li>
+                    <li class="list-group-item">REVISION NO : </li>
+                    <li class="list-group-item">EXPECTED TIME : </li>
+                    <li class="list-group-item">FILE : </li>
+                
+                  </ul>
+                </div>
+                <div class="col">
+                  <ul class="list-group list-group-flush " style="padding-right : 0cap;">
+                    <li class="list-group-item" style="background-color: blanchedalmond;">{% if entry.grn_entry.grnentry_GRNNO %}{{ entry.grn_entry.grnentry_GRNNO }}{% else %}<span style="color: red;">No CHALLAN NO.</span>{% endif %}</li>
+                    <li class="list-group-item">{% if entry.grn_entry.grnentry_MATERIALDESCRIPTION %}{{ entry.grn_entry.grnentry_MATERIALDESCRIPTION }}{% else %}<span style="color: red;">No CHALLAN NO.</span>{% endif %}</li>
+                    <li class="list-group-item">{{ entry.grn_entry.grnentry_MATERIALGRADE }}</li>
+                    <li class="list-group-item" style="background-color: blanchedalmond;">{{ entry.grn_entry.grnentry_NOQUANTITY}} {{ entry.grn_entry.grnentry_QUANTITYTYPE }}</li>
+                  
+                    <li class="list-group-item">{{ entry.grn_entry.grnentry_DATETIME }}</li>
+                    <li class="list-group-item"> {{ entry.grn_entry.grnentry_STOREOWNER }}</li>
+                    <li class="list-group-item"> {{ entry.grn_entry.grnentry_ORDERTYPE }} </li>
+                    <li class="list-group-item">{% if entry.grn_entry.grnentry_CUSTOMERCODE %}{{ entry.grn_entry.grnentry_CUSTOMERCODE }}{% else %}<span style="color: red;">No customer code</span>{% endif %}</li>
+                    <li class="list-group-item">{% if entry.grn_entry.grnentry_PONO %}{{ entry.grn_entry.grnentry_PONO }}{% else %}<span style="color: red;">No PO.</span>{% endif %}</li>
+                    <li class="list-group-item">{% if entry.grn_entry.grnentry_CHALLANNO %}{{ entry.grn_entry.grnentry_CHALLANNO }}{% else %}<span style="color: red;">No CHALLAN NO.</span>{% endif %}</li>
+                    <li class="list-group-item">{% if entry.grn_entry.grnentry_COMMENTS %}{{ entry.grn_entry.grnentry_COMMENTS }}{% else %}<span style="color: red;">No COMMENTS.</span>{% endif %}</li>
+                   
+                    <li class="list-group-item">{% if entry.grn_entry.grnentry_SONO %}{{ entry.grn_entry.grnentry_SONO }}{% else %}<span style="color: red;">No SO NO.</span>{% endif %}</li></li>
+                    <li class="list-group-item">{% if entry.grn_entry.grnentry_PARTNAME %}{{ entry.grn_entry.grnentry_PARTNAME }}{% else %}<span style="color: red;">No PART NO</span>{% endif %}</li> </li>
+                    <li class="list-group-item">{% if entry.grn_entry.grnentry_DRAWINGNO %}{{ entry.grn_entry.grnentry_DRAWINGNO }}{% else %}<span style="color: red;">No DRAWING NO.</span>{% endif %}</li></li>
+                    <li class="list-group-item"> {% if entry.grn_entry.REVISIONNO %}{{ entry.grn_entry.REVISIONNO }}{% else %}<span style="color: red;">No REVISION NO.</span>{% endif %}</li> </li>
+                    <li class="list-group-item">{{ entry.grn_entry.grnentry_EXPTIME }} </li>
+                    <li class="list-group-item">{% if entry.grn_entry.FILE %}<a href="{{ entry.grn_entry.FILE.url }}" target="_blank">Download</a>{% else %}No file available{% endif %}</li>
+                  </ul>
+                </div></div>
+            </div>  
+        </div>
+    </div>
+</div>
+
+   <div class="row" style="margin-top: 10px;">
+      <div class="col" >
+        
+            <ul class="list-group">
+                <li class="list-group-item active" aria-current="true" style="text-align: center;">PRODUCT INFO</li>
+                <li class="list-group-item">GRNNO: <a style="font-weight: bold;"> {{ entry.grn_entry.grnentry_GRNNO }}</a></li>
+                <li class="list-group-item">VENDOR NAME:  <a style="font-weight: bold;">{{ entry.vendor_name }}</a></li>
+                <li class="list-group-item">EXP TIME:  <a style="font-weight: bold;"> {{ entry.grn_entry.grnentry_EXPTIME }}</a></li>
+                <li class="list-group-item">STATUS: 
+                  {% if work_done_percentage == 100 %}
+                      <span class="status-completed" style="font-weight: bold; color: green;">COMPLETED</span>
+                  {% elif work_done_percentage >= 75 %}
+                      <span class="status-almost-done" style="font-weight: bold; color: ORANGE;">ALMOST DONE</span>
+                  {% elif work_done_percentage >= 50 %}
+                      <span class="status-almost-done" style="font-weight: bold; color: orange;">HALF A WAY</span>
+                  {% elif work_done_percentage >= 25 %}
+                      <span class="status-almost-done" style="font-weight: bold; color: RED;">WORKING</span>    
+                  {% else %}
+                      <span class="status-pending" style="font-weight: bold; color: RED;">NOT STARTED YET</span>
+                  {% endif %}
+              </li>  
+              </ul>
+        
+              
+       </div>
+      
+       <div class="col">
+        {% if upcoming_process_details %}
+           <div class="list-group" style="margin-bottom:10px ;">
+               {% with upcoming_process=upcoming_process_details.0 %}
+                   <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                       <div class="d-flex w-100 justify-content-between">
+                           <h5 class="mb-1">UPCOMING PROCESS</h5>
+                           <small>{{ upcoming_process.due_date|timesince }} after</small>
+                       </div>
+                       <p class="mb-1">{{ upcoming_process.process }}</p>
+                       <small>{{ upcoming_process.description }}</small>
+                   </a>
+                
+                
+
+               {% endwith %}
+           </div>
+       
+   {% endif %}
+   
+        <div class="list-group">
+            {% if last_completed %}
+                <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">LAST PROCESS DONE</h5>
+                        <small>{{ last_completed.completed_time|timesince }} ago</small>
+                    </div>
+                    <p class="mb-1">{{ last_completed.process }}</p>
+                    <small>{{ last_completed.description }}</small>
+                </a>
+            {% else %}
+                <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">LAST PROCESS DONE</h5>
+                        <small>none ago</small>
+                    </div>
+                    <p class="mb-1">NOTHING</p>
+                    
+                </a>
+            {% endif %}
+       </div>
+   </div>
+
+   <div class="row" style="margin-top: 20px; margin-left: 10px; color: blue;">PROGRESS BAR:</div>
+       <div class="row" style="height: 100px; width: 100%; justify-content: center; display: flex; border: 1px solid black; align-items: center; border-radius: 10px;">
+        <span>WORK DONE: {{ work_done_percentage }}%</span>
+   
+   <div class="progress-stacked">
+    
+    <div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style=" width: {{ work_done_percentage }}%;">
+      <div class="progress-bar">{{ work_done_percentage }}%</div>
+    </div>
+   
+  </div>
+    </div>
+    <div class="row" style="margin-top: 20px; margin-left: 10px; color: blue;">ORDER STATUS:</div>
+    <div class="row">
+      <div class="list-group">
+          <ol class="list-group list-group-numbered">
+              {% for process_detail in entry.processdetails_set.all %}
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div class="ms-2 me-auto">
+                      <div class="fw-bold">{{ process_detail.process }}</div>
+                       
+                      <div>{{ process_detail.description }}</div>
+                      <div>{{ process_detail.acc_qty}}</div>
+                      <!-- Add more details about the process here if needed -->
+                  </div>
+                  <span class="badge text-bg-primary rounded-pill">{{ process_detail.completed_time }}</span>
+                  {% if not process_detail.completed %}
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-primary mark-as-completed-btn" data-bs-toggle="modal" data-bs-target="#markCompletedModal{{ process_detail.id }}">
+                                <i class="bi bi-check"></i>
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="markCompletedModal{{ process_detail.id }}" tabindex="-1" aria-labelledby="markCompletedModalLabel{{ process_detail.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="btn btn-warning " id="markCompletedModalLabel{{ process_detail.id }}">DETAILS</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post" action="{% url 'display_entry_details' entry.id %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="process_id" value="{{ process_detail.id }}">
+                                                
+                                                <label class="btn btn-light mark-as-completed-btn"  style="font-weight: 900; margin: 5px;text-align: left; padding: 0%;"> QUANTITY FOR PRODUCTION:{{process_detail.form_data.grn_entry.grnentry_NOQUANTITY}}</label>
+                                                <label class="btn btn-light mark-as-completed-btn"  style="font-weight: 900; margin: 5px;text-align: left; padding: 0%;"> ACCEPETED QUANTITY:{{process_detail.form_data.ttl_accepted_qty}}</label>
+                                                <div class="mb-3">
+                                                    <label for="acceptedQty{{ process_detail.id }}" class="form-label">Accepted Quantity</label>
+                                                    <input type="number" min="0" max="{{process_detail.form_data.ttl_accepted_qty}}" class="form-control" id="acceptedQty{{ process_detail.id }}" name="accepted_qty" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="rejectedQty{{ process_detail.id }}" class="form-label">Rejected Quantity</label>
+                                                    <input type="number" min="0" max="{{process_detail.form_data.ttl_accepted_qty}}" class="form-control" id="rejectedQty{{ process_detail.id }}" name="rejected_qty" required>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <span class="badge bg-success">Completed</span>
+                        {% endif %}
+              </li>
+              {% endfor %}
+          </ol>
+      </div>
+  </div>
+</main>
+{% endblock %}
+{% block js %}
+
+<script>
+    // Function to display confirmation popup for marking as completed
+   
+
+    // Attach event listener to the "Mark as Completed" buttons
+    const markCompletedBtns = document.querySelectorAll('.mark-as-completed-btn');
+    markCompletedBtns.forEach(btn => {
+        btn.addEventListener('click', function(event) {
+            // Prevent the default form submission
+            event.preventDefault();
+            // Call the confirmMarkAsCompleted function before submitting the form
+            if (confirmMarkAsCompleted()) {
+                // Submit the form
+                this.closest('form').submit();
+            }
+        });
+    });
+</script>
+{% endblock %}

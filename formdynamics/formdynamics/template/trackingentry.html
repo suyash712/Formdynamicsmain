@@ -1,0 +1,87 @@
+
+
+
+{% extends 'home.html' %}
+{% block title %}FD TRACKING ENTRY{% endblock %}
+{% block body %}
+<main id="main" style="justify-content: center; display: flex;" class="main">
+  <div style="height: 500px; width: 800px; background-color: white; padding: 10px;">
+    <h3> <span class="badge text-bg-warning">PRODUCTION ENTRY</span></h3>
+    <form id="form" style="margin-top: 20px;" class="row g-3" method="post" action="{% url 'form_view' entry_id=grn_entry.id %}" enctype="multipart/form-data">
+
+      {% csrf_token %}
+      <div class="col-md-6">
+        <label for="inputEmail4" class="form-label">GRNNO<span class="text-danger">*</span></label>
+        <input type="text" name="GRNNO" class="form-control" id="inputEmail4" value="{{ grn_entry.grnentry_GRNNO }}" readonly>
+      </div>
+      <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">VENDOR NAME<span class="text-danger">*</span></label>
+        <input type="text" name="vendor_name" class="form-control" id="inputPassword4" required>
+      </div>
+     
+      
+      
+      <span style="margin-bottom: 10px;">PROCESS DETAILS<span class="text-danger">*</span>:</span>
+      <div class="container" style="margin-bottom: 10px;">
+        <button type="button" onclick="addField()" class="btn btn-primary">Add Field</button>
+      </div>
+      <div class="label" style="display:flex; gap: 38px; margin-left: 20px; margin-bottom: 10px;">
+        <div>PROCESS<span class="text-danger">*</span></div>
+        <div>DESCRIPTION<span class="text-danger">*</span></div>
+        <div>START DATE<span class="text-danger">*</span></div>
+        <div>END DATE<span class="text-danger">*</span></div>
+        <div>QUANTITY<span class="text-danger">*</span></div>
+      </div>
+      <div class="container" style="display: flex; gap: 5px;">
+        <input type="text" name="inputField[]" placeholder="process details" class="form-control" required>
+        <input type="text" name="inputField[]" placeholder="description" class="form-control" required>
+        <input type="date" name="inputField[]" placeholder="start date" class="form-control" required>
+        <input type="date" name="inputField[]" placeholder="end date" class="form-control" required>
+        <input type="number" min="0" name="inputField[]" placeholder="quantity" class="form-control" required>
+        <button type="button" onclick="removeField(this)" class="btn btn-primary">Remove</button>
+      </div>
+      <div id="new-fields-container" style="padding: 0%;"> </div>
+
+      <div class="container1" style="display: flex;gap: 5px;  ">
+
+        
+        <input type="text" name="inputField[]" placeholder="process details" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+        <input type="text" name="inputField[]" placeholder="description" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+        <input type="date" name="inputField[]" placeholder="start date" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"required>
+        <input type="date" name="inputField[]" placeholder="end date" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+        <input type="number" name="inputField[]" min="0" placeholder="quantity" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+        <input class="form-control" type="file" id="formFileMultiple" multiple required>
+        
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+  <script>
+    function addField() {
+      var container = document.createElement('div');
+      container.className = 'container';
+      container.style.display = 'flex';
+      container.style.gap = '5px';
+      container.innerHTML = `
+        <input type="text" name="inputField[]" style="margin-bottom:10px;" placeholder="process details" class="form-control" required>
+        <input type="text" name="inputField[]" style="margin-bottom:10px;" placeholder="description" class="form-control" required>
+        <input type="date" name="inputField[]" style="margin-bottom:10px;" placeholder="start date" class="form-control" required>
+        <input type="date" name="inputField[]" style="margin-bottom:10px;" placeholder="end date" class="form-control" required>
+        <input type="number" min="0" name="inputField[]" style="margin-bottom:10px;" placeholder="quantity" class="form-control" required>
+        <button type="button" onclick="removeField(this) " style="margin-bottom:10px;" class="btn btn-primary">Remove</button >
+      `;
+      document.getElementById('new-fields-container').appendChild(container);
+    }
+
+    function removeField(button) {
+      var container = button.parentNode;
+      container.parentNode.removeChild(container);
+    }
+  </script>
+  <script>
+    function confirmSubmit() {
+      return confirm("Are you sure you want to submit this form?");
+    }
+  </script>
+</main>
+{% endblock %}

@@ -1,0 +1,315 @@
+{% extends 'home.html' %}
+{% block title %}FD PRODUCTION ENTRY{% endblock %}
+{% block head %}
+<style>
+  
+</style> 
+{% endblock %}
+{% block body %}
+<main id="main" class="main">
+    <div class="row">
+        <div class="col">
+    <h3> <span class=" badge text-bg-warning">PRODUCTION ENTRY</span></h3></div>
+    <div class="col" style="display: flex; justify-content: end;">
+        <input type="text" id="searchInput" onkeyup="search()" placeholder="Search for Vendor or GRN..." style="margin-left: 10px;">
+    </div>
+    </div>
+    <table class="table " id="entryTable">
+        <thead>
+            <tr >
+                <th>GRN NO.</th>
+                <th>CUSTOMER NAME</th>
+                <th>DRAWING NO</th>
+               
+                <th>ACC/REJ QTY</th>
+                <th>ORD/DISPATCH QTY </th>
+                <th>WORK DONE</th>
+            </tr>
+        </thead>
+        <tbody id="employeeTable">
+            {% for entry in form_data %}
+            <tr class="clickable-row row1" data-href="{% url 'display_entry_details' entry.id %}">
+                <td>{{ entry.grn_entry.grnentry_GRNNO }}</td>
+                <td>{{ entry.vendor_name }}</td>
+                <td>{{ entry.grn_entry.grnentry_DRAWINGNO }}</td>
+               
+                <td style="justify-content: center;font-weight: 900;"><span style="color: green;">{{ entry.ttl_accepted_qty}}</span>|<span style="color: red;"> {{ entry.ttl_rejected_qty}} </span></td>
+                <td>{{ entry.grn_entry.grnentry_NOQUANTITY}}|{{entry.ttl_dispatch_qty}}</td>
+                <td>{{ entry.order_status }} 
+                    {% if entry.order_status == "Completed" %}
+                    <button id="dispatchButton{{ entry.id }}" type="button" class="btn btn-danger    btn-sm dispatch-button"
+                        data-entry-id="{{ entry.id }}"
+                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; margin-left: 100px;">
+                        DISPATCH
+                    </button>
+                    
+                    {% if entry.ttl_dispatch_qty == "0" %}
+                    <button type="button" class="btn btn-primary    btn-sm dispatch-button" data-bs-toggle="modal" data-bs-target="#infoModal{{ entry.id }}" disabled>Info</button>
+                    {% else %}
+                    <button type="button" class="btn btn-primary    btn-sm dispatch-button" data-bs-toggle="modal" data-bs-target="#infoModal{{ entry.id }}" >Info</button>
+                    {% endif %}
+
+                    {% elif entry.order_status == "Pending"  %}
+                    <button id="dispatchButton{{ entry.id }}" type="button" class="btn btn-danger    btn-sm dispatch-button"
+                        data-entry-id="{{ entry.id }}"
+                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; margin-left: 120px;">
+                        DISPATCH
+                    </button>
+                    {% else %}
+                    <button type="button" class="btn btn-success"
+                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; margin-left: 110px;" disabled>
+                        DELIVERED
+                    </button>
+                    <button type="button" class="btn btn-primary    btn-sm dispatch-button" data-bs-toggle="modal" data-bs-target="#infoModal{{ entry.id }}">Info</button>
+                    
+                    <span class="badge text-bg-primary rounded-pill">{{ form_data.dispatch_time  }}</span>
+
+                    {% endif %}
+                </td>
+                
+            </tr>
+            <div class="modal fade" id="infoModal{{ entry.id }}" tabindex="-1" aria-labelledby="infoModalLabel{{ entry.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content"  style="height: auto; width: 800px;">
+                        <div class="modal-header">
+                            <h3> <span id="infoModalLabel{{ entry.id }}" class=" badge text-bg-primary">DISPATCH ENTRY DETAILS:</span></h3>
+                            
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {{entry.grn_entry.grnentry_GRNNO}}
+                            {% for entry in entry.delivery_set.all %}
+                                
+                                
+                                <div class="row" style="gap: 0px;">
+                                    <h4> <span class="badge text-bg-warning">{{ entry.DATE }}</span></h4>
+                                    <div class="col" style="font-weight: bold;">
+                                      <ul class="list-group list-group-flush" style="padding-left: 0cap;">
+                                        <li class="list-group-item">FINISHED JOB QTY. : </li>
+                                        <li class="list-group-item">TOTAL QUANTITY TO DISPATCHED :</li>
+                                        <li class="list-group-item">INVOICE NO: </li>
+                                        <li class="list-group-item">DELIVERY CHALLAN :</li>
+                                        <li class="list-group-item">DC/INVOICE: </li>
+                                        <li class="list-group-item">BUYER NAME :</li>
+                                        <li class="list-group-item">SALES REPRESENTATIVE : </li>
+                                        <li class="list-group-item">PART COST: </li>
+                                        <li class="list-group-item">DATE: </li>
+                                       
+                                    
+                                      </ul>
+                                    </div>
+                                    <div class="col">
+                                      <ul class="list-group list-group-flush " style="padding-right : 0cap;">
+                                        <li class="list-group-item" >{% if entry.FINISHEDQTY %}{{ entry.FINISHEDQTY }}{% else %}<span style="color: red;">No CHALLAN NO.</span>{% endif %}</li>
+                                        <li class="list-group-item" style="background-color: blanchedalmond;">{% if entry.TTL_QNT_DISPATCH %}{{ entry.TTL_QNT_DISPATCH }}{% else %}<span style="color: red;">No CHALLAN NO.</span>{% endif %}</li>
+                                        <li class="list-group-item" >{% if entry.INVOICENO %}{{ entry.INVOICENO }}{% else %}<span style="color: red;">No CHALLAN NO.</span>{% endif %}</li>
+                                        <li class="list-group-item">{% if entry.DELIVERYCHALLAN %}{{ entry.DELIVERYCHALLAN }}{% else %}<span style="color: red;">No customer code</span>{% endif %}</li>
+                                        <li class="list-group-item" style="background-color: blanchedalmond;">{% if entry.OPTIONDC%}{{ entry.OPTIONDC }}{% else %}<span style="color: red;">No PO.</span>{% endif %}</li>
+                                        <li class="list-group-item">{% if entry.BUYERNAME %}{{ entry.BUYERNAME }}{% else %}<span style="color: red;">No CHALLAN NO.</span>{% endif %}</li>
+                                        <li class="list-group-item">{% if entry.SALESREPRESENT %}{{ entry.SALESREPRESENT }}{% else %}<span style="color: red;">No COMMENTS.</span>{% endif %}</li>
+                                        <li class="list-group-item">{% if entry.PARTCOST %}{{ entry.PARTCOST }}{% else %}<span style="color: red;">No SO NO.</span>{% endif %}</li></li>
+                                        <li class="list-group-item">{% if entry.DATE %}{{ entry.DATE }}{% else %}<span style="color: red;">No PART NO</span>{% endif %}</li> </li>
+                                       
+                                    </div></div>
+
+                                <hr>
+                            {% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             
+             <!-- Info Modal -->
+             
+
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- End Table with stripped rows -->
+
+
+
+
+<!-- Modal -->
+{% for entry in form_data %}
+
+
+<div class="modal fade" id="deliveryModal{{ entry.id }}" tabindex="-1" aria-labelledby="deliveryModalLabel{{ entry.id }}" aria-hidden="true" >
+    <div class="modal-dialog" style="justify-content: center;" >
+        <div class="modal-content" style="height: min-content; width: 800px;">
+            <div class="modal-header">
+                <h3> <span class="badge text-bg-warning">DELIVERY ENTRY</span></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Your delivery form goes here -->
+                <form id="deliveryForm{{ entry.id }}" method="post" class="row g-3" action="{% url 'dispatch_details' entry.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+
+                    <span class="col" style="font-weight: 900;">REMAINING QUANTITY TO DISPATCH:<mark> {{entry.rem_qty_dispatch}}</mark></span>
+                    <span class="col" style="font-weight: 900;">TOTAL QUANTITY TO DISPATCH:<mark> {{entry.grn_entry.grnentry_NOQUANTITY}}</mark></span>
+                    </div>
+                    <ul>
+                    <div class="row">
+                        <div class="mb-3 col">
+                            <label for="FINISHEDQTY{{ entry.id }}" class="form-label">FINISHED JOB QTY</label>
+                            <input type="number" min="0" max="{{ entry.grn_entry.grnentry_NOQUANTITY}}" name="FINISHEDQTY" class="form-control" id="FINISHEDQTY{{ entry.id }}" aria-describedby="emailHelp">    
+                        </div>
+                        <div class="mb-3 col">
+                            <label for="PDIREPORT{{ entry.id }}" class="form-label">PDI REPORT</label>
+                            <input class="form-control" name="PDIREPORT" type="file" id="PDIREPORT{{ entry.id }}" required>    
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col">
+                            <label for="TTL_QNT_DISPATCH{{ entry.id }}" class="form-label">TOTAL QUANTITY DISPATCHED</label>
+
+                            <input type="number" min="0" max="{{entry.rem_qty_dispatch}}" name="TTL_QNT_DISPATCH" class="form-control" id="TTL_QNT_DISPATCH{{ entry.id }}" aria-describedby="emailHelp">    
+                        </div>
+                        <div class="mb-3 col">
+                            <label for="INVOICENO{{ entry.id }}" class="form-label">INVOICE NO.</label>
+                            <input type="text" name="INVOICENO" class="form-control" id="INVOICENO{{ entry.id }}" aria-describedby="emailHelp">    
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col">
+                            <label for="DELIVERYCHALLAN{{ entry.id }}" class="form-label">DELIVERY CHALLAN</label>
+                            <input type="text" name="DELIVERYCHALLAN" class="form-control" id="DELIVERYCHALLAN{{ entry.id }}" aria-describedby="emailHelp">    
+                        </div>
+                        <div class="col">
+                            <label class="form-label" style="font-weight: bold;">DC/INVOICE</label>
+                            <select class="form-select" aria-label="Default select example" name="OPTIONDC" id="OPTIONDC{{ entry.id }}">
+                                <option selected disabled>CHOOSE</option>
+                                <option value="DC">DC</option>
+                                <option value="INVOICE">INVOICE</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col">
+                            <label for="BUYERNAME{{ entry.id }}" class="form-label">BUYER NAME</label>
+                            <input type="text" name="BUYERNAME" class="form-control" id="BUYERNAME{{ entry.id }}" aria-describedby="emailHelp">    
+                        </div>
+                        <div class="mb-3 col">
+                            <label for="SALESREPRESENT{{ entry.id }}" class="form-label">SALES REPRESENTATIVE</label>
+                            <input type="text" name="SALESREPRESENT" class="form-control" id="SALESREPRESENT{{ entry.id }}" aria-describedby="emailHelp">    
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col">
+                            <label for="PARTCOST{{ entry.id }}" class="form-label">PART COST</label>
+                            <input type="number" min="0" name="PARTCOST" class="form-control" id="PARTCOST{{ entry.id }}" aria-describedby="emailHelp">    
+                        </div>
+                       
+                    
+                   
+                        <div class="mb-3 col">
+                            <label for="PARTCOST{{ entry.id }}" class="form-label">DATE</label>
+                            <input type="date"  name="DATE" class="form-control" id="DATE{{ entry.id }}" aria-describedby="emailHelp">    
+                        </div>
+                        
+                       
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>  
+        </div>
+    </div>
+</div>
+</main>
+{% endfor %}
+<!-- End Modal -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // Your JavaScript code for triggering modals and form population goes here
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const dispatchInputs = document.querySelectorAll('input[name="TTL_QNT_DISPATCH"]');
+    dispatchInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const entryId = this.closest('form').id.replace('deliveryForm', '');
+            const remainingQuantityElement = document.getElementById(`remainingQuantity${entryId}`);
+            const initialQuantity = parseInt(remainingQuantityElement.dataset.initialQuantity) || 0;
+            const dispatchedQuantity = parseInt(this.value) || 0;
+            const remainingQuantity = Math.max(0, initialQuantity - dispatchedQuantity);
+            remainingQuantityElement.textContent = isNaN(remainingQuantity) ? '0' : remainingQuantity;
+        });
+    });
+});
+    </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Handle clicking on the row
+    $(".clickable-row").click(function() {
+        window.location = $(this).data("href");
+    });
+
+    // Handle clicking on the button within the row
+    $(".dispatch-button").click(function(event) {
+        event.stopPropagation(); // Prevent the row click event from triggering
+        var entryId = $(this).data("entry-id");
+        $("#deliveryModal" + entryId).modal("show"); // Open the modal associated with the button
+    });
+
+    // Disable dispatch button after form submission
+    $("form").submit(function() {
+        var entryId = $(this).attr("id").replace("deliveryForm", "");
+        $("#dispatchButton" + entryId).prop("disabled", true).text("Delivered");
+    });
+});
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var dispatchButtons = document.querySelectorAll(".dispatch-button");
+        dispatchButtons.forEach(function(button) {
+            button.addEventListener("click", function() {
+                var entryId = button.getAttribute("data-entry-id");
+                // Implement your dispatch functionality here, possibly via AJAX.
+            });
+        });
+    });
+
+    function search() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("entryTable");
+    tr = table.getElementsByTagName("tr");
+
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+        // Get all cells (td elements) in the current row
+        td = tr[i].getElementsByTagName("td");
+        let found = false;
+        // Loop through all cells in the current row and check if any match the search query
+        for (var j = 0; j < td.length; j++) {
+            txtValue = td[j].textContent || td[j].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                found = true;
+                break;  // Break the inner loop if a match is found in any cell
+            }
+        }
+        if (found) {
+            tr[i].style.display = "";  // Show the row if a match was found
+        } else {
+            tr[i].style.display = "none";  // Hide the row if no match was found
+        }
+    }
+}
+</script>
+
+
+
+
+
+
+{% endblock %}
