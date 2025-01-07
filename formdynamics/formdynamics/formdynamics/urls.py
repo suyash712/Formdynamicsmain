@@ -33,9 +33,9 @@ urlpatterns = [
     path('grnmainpage',views.grninfo,name='grninfo'),
     path('apicall_salesorder',views.apicall_salesorder,name='apicall'),
     path('apicall_purchaseorder',views.apicall_purchaseorder,name='apicall_purchaseorder'),
-    path('salesorder1',views.salesorderinfo),
-    path('purchaseinfo',views.purchaseinfo),
-    path("purchaseinfo",views.purchaseinfo),
+    path('salesorder1',views.salesorderinfo,name="salesorderinfo"),
+    path('purchaseinfo',views.purchaseinfo,name='purchaseinfo'),
+   
     path("purchaseinfoshow",views.purchaseinfoshow),
     path('trackentry',views.trackentry),
     path('inventory',views.inventory_view,name='inventory'),
@@ -59,11 +59,11 @@ urlpatterns = [
     path('savematerial',views.savematerial,name='savematerial'),
     path('saveemployee/', views.saveemployee, name='saveemployee'),
     # URL pattern for displaying all employees
-   path('employees', views.showemployee),
+   path('employees', views.showemployee,name='employees'),
     path('update_employee/<int:employee_id>/', views.update_employee, name='update_employee'),
     path('saveemployee/', views.saveemployee, name='saveemployee'),
     # URL for showing instruction calibration page
-     path('instruction_calibration', views.show_ins_cal),
+     path('instruction_calibration', views.show_ins_cal,name='instruction_calibration'),
     # URL for adding new calibration instruction
     path('cal/', views.ins_cal_form, name='cal'),
     # URL for updating existing calibration instruction
@@ -78,7 +78,7 @@ urlpatterns = [
     path('outsourseform',views.outsourseform,name='outsourseform'),
     path('mark_complete/<int:pk>/', views.mark_complete, name='mark_complete'),
     path('notifications/', views.get_notifications, name='notifications'),
-    path('dashboard', views.dashboard ),
+    path('dashboard', views.dashboard,name='dashboard' ),
     path('form<int:entry_id>', views.form_view, name='form_view'),
     path('trackingentry<int:entry_id>', views.tracking_entry_view, name='tracking_entry_view'),
     path('display_form_data', views.display_form_data, name='display_form_data'),
@@ -87,6 +87,9 @@ urlpatterns = [
       path('ins_cal_form',views.ins_cal_form,name='ins_cal_form'),
        path('get_suppliers/', views.get_suppliers, name='get_suppliers'),
        path('save_completion/<int:entry_id>/', views.save_completion, name='save_completion'),
-      path('calender', views.calendar_view, name='calendar_view'),
+      path('calender', views.calendar_view, name='calendar'),
         path('calendar_events/', views.calendar_events, name='calendar_events'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])

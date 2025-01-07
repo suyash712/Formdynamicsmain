@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,12 +112,12 @@
         <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           
           <li>
-            <a href="http://127.0.0.1:8000/grnmainpage">
+            <a href="{% url 'savegrndata'%}">
               <i class="bi bi-bookmark-plus-fill"></i><span>LIST GRNENTRY</span>
             </a>
           </li>
           <li>
-            <a href="http://127.0.0.1:8000/display_form_data">
+            <a href="{% url 'display_form_data'%}">
               <i class="bi bi-bookmark-plus-fill"></i><span>ORDER TRACK LIST</span>
             </a>
           </li>
@@ -124,56 +126,56 @@
       <li class="nav-heading"></li>
       
       <li class="nav-item">
-        <a class="nav-link collapsed" href="http://127.0.0.1:8000/materialinfo1">
+        <a class="nav-link collapsed" href="{% url 'display_material' %}">
           <i class="bi bi-question-circle"></i>
           <span>MATERIAL INFO</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="http://127.0.0.1:8000/salesorder1">
+        <a class="nav-link collapsed" href="{% url 'salesorderinfo'%}">
           <i class="bi bi-receipt-cutoff"></i>
           <span>SALES ORDER</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="http://127.0.0.1:8000/purchaseinfo">
+        <a class="nav-link collapsed" href="{% url 'purchaseinfo'%}">
           <i class="bi bi-receipt"></i>
           <span>PURCHASE ORDER</span>
         </a>
       </li>
       
       <li class="nav-item">
-        <a class="nav-link collapsed" href="http://127.0.0.1:8000/inventory">
+        <a class="nav-link collapsed" href="{% url 'inventory'%}">
           <i class="bi bi-cart-check"></i>
           <span>INVENTORY</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="http://127.0.0.1:8000/employees">
+        <a class="nav-link collapsed" href="{% url 'employees'%}">
           <i class="bi bi-people-fill"></i>
           <span>EMPLOYEE INFO</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="http://127.0.0.1:8000/show_master_component">
+        <a class="nav-link collapsed" href="{% url 'show_master_component'%}">
           <i class="bi bi-hammer"></i>
           <span>MASTER COMPONENT</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="http://127.0.0.1:8000/instruction_calibration">
+        <a class="nav-link collapsed" href="{% url 'instruction_calibration'%}">
           <i class="bi bi-question-circle"></i>
           <span>INSTRUCTION CALIBRATION</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="http://127.0.0.1:8000/showoutsourse">
+        <a class="nav-link collapsed" href="{% url 'showoutsourse'%}">
           <i class="bi bi-truck"></i>
           <span>OUTSOURSE</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="http://127.0.0.1:8000/calender">
+        <a class="nav-link collapsed" href="{% url 'calendar'%}">
           <i class="bi bi-truck"></i>
           <span> WORK CALENDER</span>
         </a>
