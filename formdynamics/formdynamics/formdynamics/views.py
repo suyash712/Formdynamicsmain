@@ -73,7 +73,32 @@ def dashboard_view(request):
         'total_rejected': total_rejected,
     }
 
-    return render(request, 'dashboard.html', context)    
+    return render(request, 'dashboard.html', context)
+from django.shortcuts import get_object_or_404, redirect
+
+
+def edit_employee(request):
+    if request.method == 'POST':
+        employee_id = request.POST.get('employee_id')
+        employee = get_object_or_404(Employee_info, id=employee_id)
+
+        # Update fields
+        employee.name = request.POST.get('name')
+        employee.Designation = request.POST.get('Designation')
+        employee.aadhar_no = request.POST.get('aadhar_no')
+        employee.mobile_no = request.POST.get('mobile_no')
+        employee.save()
+
+        return redirect(showemployee)  # Replace 'employee_list' with your employee list view
+from grnentry.models import Employee_info
+
+def delete_employee(request, employee_id):
+    if request.method == 'POST':
+        employee = get_object_or_404(Employee_info, id=employee_id)
+        employee.delete()
+        messages.success(request, 'Employee deleted successfully.')
+        return redirect(showemployee)
+    
 
 def login_view(request):
     if request.method == 'POST':
@@ -506,6 +531,7 @@ def edit_grnentry(request, pk):
         cal.grnentry_PARTNAME = request.POST.get('grnentry_PARTNAME')
         cal.grnentry_DRAWINGNO = request.POST.get('grnentry_DRAWINGNO')
         cal.REVISIONNO = request.POST.get('REVISIONNO')
+        
         cal.customername = request.POST.get('customername')
 
         # Only update FILE if a new file is provided
@@ -1293,3 +1319,19 @@ def calendar_events(request):
     } for event in events]
 
     return JsonResponse(data, safe=False)
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('dashboard')  # Replace 'home' with your homepage URL name
+        else:
+            messages.error(request, 'Invalid username or password.')
+    return render(request, 'login.html')

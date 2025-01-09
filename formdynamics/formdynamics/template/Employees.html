@@ -28,13 +28,61 @@
             <td>{{ employee.Designation}}</td>
             <td>{{ employee.aadhar_no}}</td>
             <td>{{ employee.mobile_no}}</td>
-            
-            
+            <td>
+            <button class="btn btn-warning btn-sm edit-btn"
+                            data-id="{{ employee.id }}"
+                            data-name="{{ employee.name }}"
+                            data-designation="{{ employee.Designation }}"
+                            data-aadhar="{{ employee.aadhar_no }}"
+                            data-mobile="{{ employee.mobile_no }}">
+                        Edit
+                    </button>
+                    <form method="post" action="{% url 'delete_employee' employee.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm delete-btn">Delete</button>
+                    </form>
+                </td>
           </tr>
           {% endfor %}
           
         </tbody>
       </table>
+      <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Employee</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'editemployee' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="employee_id" id="editEmployeeId">
+                        <div class="mb-3">
+                            <label for="editName" class="form-label">NAME</label>
+                            <input type="text" name="name" class="form-control" id="editName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDesignation" class="form-label">DESIGNATION</label>
+                            <input type="text" name="Designation" class="form-control" id="editDesignation" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editAadhar" class="form-label">AADHAR CARD NO</label>
+                            <input type="text" name="aadhar_no" class="form-control" id="editAadhar" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editMobile" class="form-label">MOBILE NUMBER</label>
+                            <input type="text" name="mobile_no" class="form-control" id="editMobile" required>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
       <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -87,6 +135,27 @@
         });
     </script>
   <script>
+    document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const employeeId = this.getAttribute('data-id');
+                const name = this.getAttribute('data-name');
+                const designation = this.getAttribute('data-designation');
+                const aadhar = this.getAttribute('data-aadhar');
+                const mobile = this.getAttribute('data-mobile');
+
+                // Populate modal fields
+                document.getElementById('editEmployeeId').value = employeeId;
+                document.getElementById('editName').value = name;
+                document.getElementById('editDesignation').value = designation;
+                document.getElementById('editAadhar').value = aadhar;
+                document.getElementById('editMobile').value = mobile;
+
+                // Show the modal
+                $('#myModal').modal('show');
+            });
+        });
+
+
     function search() {
         // Get the value from the search input
         var input = document.getElementById('searchInput');
@@ -119,6 +188,15 @@
             }
         }
     }
+
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function (event) {
+                if (!confirm('Are you sure you want to delete this employee?')) {
+                    event.preventDefault(); // Prevent form submission
+                }
+            });
+        });
 </script>
 
 

@@ -25,8 +25,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-   path('login', views.login_view, name='login_view'),
-    path('', views.dashboard_page, name='dashboard'),
+    path('delete_employee/<int:employee_id>/', views.delete_employee, name='delete_employee'),
+
+    path('', views.user_login, name='login'),
+    path('editemployee/', views.edit_employee, name='editemployee'),
+  # path('login', views.login_view, name='login_view'),
+    path('das', views.dashboard_page, name='dashboard'),
     path('admin/', admin.site.urls),
     path('grnentry1',views.grnentry, name='grnentry'),
     path('grnentry',views.savegrndata,name='savegrndata'),

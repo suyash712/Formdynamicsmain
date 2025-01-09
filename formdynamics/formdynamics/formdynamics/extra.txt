@@ -15,3 +15,26 @@ ExecStart=/home/ubuntu/project/myenv/bin/gunicorn \
 
 [Install]
 WantedBy=multi-user.target          
+
+
+
+ <button class="editButton btn btn-outline-info"
+                          data-id="{{ entry.pk }}"
+                          data-grn_no="{{ entry.grnentry_GRNNO }}"
+                          data-description="{{ entry.grnentry_MATERIALDESCRIPTION }}"
+                          data-material_grade="{{ entry.grnentry_MATERIALGRADE }}"
+                          data-quantity_type="{{ entry.grnentry_QUANTITYTYPE }}"
+                          data-no_quantity="{{ entry.grnentry_NOQUANTITY }}"
+                          data-store_owner="{{ entry.grnentry_STOREOWNER }}"
+                          data-order_type="{{ entry.grnentry_ORDERTYPE }}"
+                          data-pono="{{ entry.grnentry_PONO }}"
+                          data-challanno="{{ entry.grnentry_CHALLANNO }}"
+                          data-comments="{{ entry.grnentry_COMMENTS }}"
+                          data-sono="{{ entry.grnentry_SONO }}"
+                          data-partname="{{ entry.grnentry_PARTNAME }}"
+                          data-drawing_no="{{ entry.grnentry_DRAWINGNO }}"
+                          data-revision_no="{{ entry.REVISIONNO }}"
+                          data-exp_time="{{ entry.grnentry_EXPTIME }}"
+                          data-customername="{{ entry.customername }}">
+                          Edit
+                      </button>
